@@ -20,8 +20,10 @@ namespace BelgeYonetimi.Data
 
         [Required]
         public string Document { get; set; }
+        public string DocumentName { get; set; }
         public bool ConsiderationStatus { get; set; }
         public DateTime TimeOfConsideration { get; set; }
+        public DateTime CreationTime { get; set; } = DateTime.Now;
 
 
         [ForeignKey("ApplicationUser")]

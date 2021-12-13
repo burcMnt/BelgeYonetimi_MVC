@@ -29,10 +29,10 @@ namespace BelgeYonetimi.Controllers
             return View();
         }
 
-        [HttpPost,ValidateAntiForgeryToken]
-        public IActionResult NewRequest(UserRequest userRequest,RequestVM requestVM )
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult NewRequest(RequestVM requestVM)
         {
-            
+
 
             if (requestVM.File != null)
             {
@@ -52,13 +52,17 @@ namespace BelgeYonetimi.Controllers
                 }
                 //your logic to save filePath to database, for example
 
-               
-                    userRequest.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                    userRequest.Document = filePath;
-                    _db.UserRequests.Add(userRequest);
-                    _db.SaveChanges();
+                UserRequest user = new();
+                user.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                user.UserName = requestVM.UserName;
+                user.UserLastName = requestVM.UserLastName;
+                user.Explanation = requestVM.Explanation;
+                user.Document = filePath;
+                user.DocumentName = fileName;
+                _db.UserRequests.Add(user);
+                _db.SaveChanges();
                 return RedirectToAction("Index", "Home");
-                
+
             }
             return View();
         }

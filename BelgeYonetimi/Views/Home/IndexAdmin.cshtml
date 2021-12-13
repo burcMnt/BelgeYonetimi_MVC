@@ -1,5 +1,75 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model List<UserRequest>
+
+<div class="row">
+
+    <div class="col-md-4 col-lg-3">
+        <h3>User's Requests</h3>
+        <div>
+            <a class="list-group-item list-group-item-action" asp-controller="Home" asp-action="IndexAdmin" asp-route-inf="all">All Request</a>
+            <a class="list-group-item list-group-item-action" asp-controller="Home" asp-action="IndexAdmin" asp-route-inf="true">Approved</a>
+            <a class="list-group-item list-group-item-action" asp-controller="Home" asp-action="IndexAdmin" asp-route-inf="false">Unapproved</a>
+        </div>
+    </div>
+
+    <div class="col-md-8 col-lg-9">
+        <h3>Requests</h3>
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Explanation</th>
+                    <th>Document Name</th>
+                    <th>Creation Time</th>
+                    <th>Status</th>
+                    <th>Approved Time</th>
+                    <th>Show Document</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <strong>@item.UserName @item.UserLastName</strong>
+
+                        </td>
+                        <td>
+                            <span>@item.Explanation</span>
+                        </td>
+                        <td>
+                            <span>@item.DocumentName</span>
+                        </td>
+                        <td>
+                            <span>@item.CreationTime</span>
+                        </td>
+                        <td>
+                            @if (item.TimeOfConsideration != DateTime.MinValue)
+                            {
+                                <span>@item.ConsiderationStatus</span>
+                            }
+                            else
+                            {
+                                <span> Pending </span>
+                            }
+
+                        </td>
+                        <td>
+                            @if (item.TimeOfConsideration == DateTime.MinValue)
+                            {
+                                <span> ___ /___ /___ </span>
+                            }
+                            else
+                            {
+                                <span>@item.TimeOfConsideration</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-controller="Home" asp-action="ShowDocument" asp-route-infpath="@item.Document" asp-route-infId="@item.UserId" class="btn btn-outline-info"> Display </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

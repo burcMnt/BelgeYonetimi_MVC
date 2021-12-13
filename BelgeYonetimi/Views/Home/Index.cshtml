@@ -1,19 +1,66 @@
 ﻿@model List<UserRequest>
-@{ 
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <a asp-controller="Requests" asp-action="NewRequest" class="btn btn-outline-primary">Create New Request</a>
-@if (Model.Count==0)
+@if (Model.Count == 0)
 {
     <p>Sorry, You have not any request to show yet !</p>
 }
 else
 {
-    <ul>
-        @foreach (var item in Model)
-        {
-            <li>@item.Document</li>
-        }
-    </ul>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Explanation</th>
+                <th>Document Name</th>
+                <th>Creation Time</th>
+                <th>Status</th>
+                <th>Approved Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <strong>@item.UserName @item.UserLastName</strong>
+
+                    </td>
+                    <td>
+                        <span>@item.Explanation</span>
+                    </td>
+                    <td>
+                        <span>@item.DocumentName</span>
+                    </td>
+                    <td>
+                        <span>@item.CreationTime</span>
+                    </td>
+                    <td>
+                        @if (item.TimeOfConsideration != DateTime.MinValue)
+                        {
+                            <span>@item.ConsiderationStatus</span>
+                        }
+                        else
+                        {
+                            <span> Pending </span>
+                        }
+
+                    </td>
+                    <td>
+                        @if (item.TimeOfConsideration == DateTime.MinValue)
+                        {
+                            <span> ___ /___ /___ </span>
+                        }
+                        else
+                        {
+                            <span>@item.TimeOfConsideration</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }

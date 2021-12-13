@@ -33,7 +33,7 @@ namespace BelgeYonetimi.Controllers
 
             if (User.Identity.IsAuthenticated && userEmail == "Admin@example.com")
             {
-                return View("IndexAdmin");
+                return RedirectToAction("IndexAdmin","Home");
             }
             else
             {
@@ -45,9 +45,39 @@ namespace BelgeYonetimi.Controllers
         {
             return View();
         }
-        public IActionResult IndexAdmin()
+        public IActionResult IndexAdmin(string inf)
         {
-            return View(_db.UserRequests.ToList());
+            IQueryable<UserRequest> requests = _db.UserRequests;
+            AdminVM vm = new();
+
+            if (inf == "all")
+            {
+                vm.AllRequest = requests.ToList();
+                return View(vm.AllRequest);
+            }
+            else if (inf == "true")
+            {
+                vm.Approved = requests.Where(x => x.ConsiderationStatus == true).ToList();
+                return View(vm.Approved);
+            }
+            else
+            {
+                vm.Unapproved = requests.Where(x => x.ConsiderationStatus == false).ToList();
+            }
+
+            return View(vm.Unapproved);
+        }
+        
+        public IActionResult ShowDocument(string infpath,string infId)
+        {
+            UserRequest userR = _db.UserRequests.Find(infId);
+            var docName = userR.DocumentName;
+            if (infpath == userR.Document)
+            {
+                return File("~/documents/docName", "application/pdf");
+            }
+
+            return View();
         }
         public IActionResult Privacy()
         {
