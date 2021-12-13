@@ -24,6 +24,7 @@
                     <th>Status</th>
                     <th>Approved Time</th>
                     <th>Show Document</th>
+                    <th>Evaluate</th>
                 </tr>
             </thead>
             <tbody>
@@ -65,7 +66,11 @@
                             }
                         </td>
                         <td>
-                            <a asp-controller="Home" asp-action="ShowDocument" asp-route-infpath="@item.Document" asp-route-infId="@item.UserId" class="btn btn-outline-info"> Display </a>
+                            <a asp-controller="Home" asp-action="ShowDocument" asp-route-infpath="@item.Document" asp-route-infId="@item.DocumentName" target="_blank" class="btn btn-outline-info"> Display </a>
+                        </td>
+
+                        <td>
+                            <a asp-controller="Home" asp-action="Evaluate" asp-route-id="@item.Id" class="btn btn-outline-success">Evaluate</a>
                         </td>
                     </tr>
                 }

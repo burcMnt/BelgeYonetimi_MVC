@@ -1,10 +1,12 @@
 ﻿using BelgeYonetimi.Data;
 using BelgeYonetimi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -70,20 +72,59 @@ namespace BelgeYonetimi.Controllers
         
         public IActionResult ShowDocument(string infpath,string infId)
         {
-            UserRequest userR = _db.UserRequests.Find(infId);
-            var docName = userR.DocumentName;
-            if (infpath == userR.Document)
-            {
-                return File("~/documents/docName", "application/pdf");
-            }
 
+          
+
+            byte[] pdfByte = GetBytesFromFile(infpath);
+            return File(pdfByte, "application/pdf");
+         
+        }
+
+        private byte[] GetBytesFromFile(string filepath)
+        {
+            FileStream fs = null;
+            try
+            {
+                fs = System.IO.File.OpenRead(filepath);
+                byte[] bytes = new byte[fs.Length];
+                fs.Read(bytes, 0, Convert.ToInt32(fs.Length));
+                return bytes;
+            }
+            finally
+            {
+                if (fs != null)
+                {
+                    fs.Close();
+                    fs.Dispose();
+                }
+            }
+        }
+
+        public IActionResult EvaluateRequest(int id)
+        {
+            var userReq = _db.UserRequests.Find(id);
+            if (userReq == null)
+            {
+                return NotFound();
+            }
+            RequestEvaluateVM vm = new();
+            vm.Id = userReq.Id;
+            vm.UserName = userReq.UserName;
+            vm.UserLastName = userReq.UserLastName;
+            vm.Explanation = userReq.Explanation;
+            
+            return View(vm);
+        }
+
+        [HttpPost,ValidateAntiForgeryToken]
+        public IActionResult EvaluateRequest(RequestEvaluateVM vm)
+        {
             return View();
         }
         public IActionResult Privacy()
         {
             return View();
         }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
